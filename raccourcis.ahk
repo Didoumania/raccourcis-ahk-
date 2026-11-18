@@ -8,16 +8,15 @@ couleurEffacer := "FF9AA2"   ; rose : effacer
 couleurNavig   := "D4B8F0"   ; lilas pastel : défilement, Tab, Entrée, Alt+Tab, flèches
 couleurZoom    := "FFE29A"   ; jaune pâle : zoom et tout réduire
 couleurClavier := "FFC8A2"   ; pêche : clavier
+couleurLiens   := "B2EBF2"   ; turquoise pâle : ouverture de Claude Code et des sites
 couleursTexte := Map()       ; couleur du texte par bouton (blanc par défaut)
 
 ; Bouton coloré : un cadre de texte cliquable (les boutons Windows ne peuvent pas être colorés).
-; Un texte sur une ligne est centré tout seul ; sur deux lignes ("A`nB") on ajoute une ligne vide au-dessus.
+; Un texte sur une ligne est centré tout seul ; sur deux lignes ("A`nB") il est placé en haut du bouton.
 BoutonCouleur(g, pos, texte, couleur, texteCouleur := "1E1E1E") {
     options := pos " +0x100 +Center Background" couleur
     if (!InStr(texte, "`n"))
-        options .= " +0x200"
-    else
-        texte := "`n" texte
+        options .= " +0x200"   ; une seule ligne : centrée verticalement
     bouton := g.AddText(options, texte)
     couleursTexte[bouton.Hwnd] := texteCouleur
     bouton.SetFont("c" texteCouleur)
@@ -27,11 +26,11 @@ BoutonCouleur(g, pos, texte, couleur, texteCouleur := "1E1E1E") {
 flechesH := 188   ; hauteur du bloc ▲▼ (défini ici car utilisé par la barre gauche)
 
 barW := 100
-barH := 1028
+barH := 1504
 
 MonitorGetWorkArea(MonitorGetPrimary(), &zoneGauche, &zoneHaut, &zoneDroite, &zoneBas)
 leftX := zoneGauche
-leftBarH := 972 ; boutons discussion en haut, puis espace vide avant CAPTURE, jusqu'à la touche Tab
+leftBarH := 1308 ; boutons discussion en haut, puis espace vide avant CAPTURE, jusqu'à la touche Tab
 leftY := A_ScreenHeight - leftBarH - 5
 
 rightX := A_ScreenWidth - barW
@@ -46,19 +45,22 @@ gauche := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x08000000 -DPIScale")
 gauche.SetFont("s13", "Segoe UI")
 
 gauche.SetFont("s11 w700 c1E1E1E", "Segoe UI")
-btnCapture := BoutonCouleur(gauche, "x4 y226 w92 h92", "CAPTURE`nÉCRAN", couleurCapture)
-btnZone := BoutonCouleur(gauche, "x4 y322 w92 h92", "CAPTURE`nZONE", couleurCapture)
-btnCaptures := BoutonCouleur(gauche, "x4 y418 w92 h92", "CAPTURE`nCLAUDE", couleurCapture)
-btnSupprimer := BoutonCouleur(gauche, "x4 y538 w92 h92", "EFFACER", couleurEffacer)
-btnAnnuler := BoutonCouleur(gauche, "x4 y658 w92 h92", "ANNULER", couleurEdition)
-btnRetablir := BoutonCouleur(gauche, "x4 y754 w92 h92", "RÉTABLIR", couleurEdition)
+btnCapture := BoutonCouleur(gauche, "x4 y562 w92 h92", "SCREEN`nÉCRAN", couleurCapture)
+btnZone := BoutonCouleur(gauche, "x4 y658 w92 h92", "SCREEN`nZONE", couleurCapture)
+btnCaptures := BoutonCouleur(gauche, "x4 y754 w92 h92", "SCREEN`nCLAUDE", couleurCapture)
+btnSupprimer := BoutonCouleur(gauche, "x4 y874 w92 h92", "EFFACER", couleurEffacer)
+btnAnnuler := BoutonCouleur(gauche, "x4 y994 w92 h92", "ANNULER", couleurEdition)
+btnRetablir := BoutonCouleur(gauche, "x4 y1090 w92 h92", "RÉTABLIR", couleurEdition)
+btnEchap := BoutonCouleur(gauche, "x4 y10 w92 h92", "ÉCHAP", couleurEffacer)
+btnClaudeCode := BoutonCouleur(gauche, "x4 y130 w92 h92", "CLAUDE`nCODE", couleurLiens)
+btnClaudeAppli := BoutonCouleur(gauche, "x4 y226 w92 h92", "CLAUDE`nAPPLI", couleurLiens)
 
 gauche.SetFont("s13 w700 c1E1E1E", "Segoe UI")
-btnDiscussionHaut := BoutonCouleur(gauche, "x4 y10 w92 h92", "DISC. ↑", couleurNavig)
-btnDiscussionBas := BoutonCouleur(gauche, "x4 y106 w92 h92", "DISC. ↓", couleurNavig)
+btnDiscussionHaut := BoutonCouleur(gauche, "x4 y346 w92 h92", "DISC. ↑", couleurNavig)
+btnDiscussionBas := BoutonCouleur(gauche, "x4 y442 w92 h92", "DISC. ↓", couleurNavig)
 
 gauche.SetFont("s" Round(34 * 96 / A_ScreenDPI) " w700 c1E1E1E", "Segoe UI Symbol")
-btnTab := BoutonCouleur(gauche, "x4 y874 w92 h92", "⇥", couleurNavig)
+btnTab := BoutonCouleur(gauche, "x4 y1210 w92 h92", "⇥", couleurNavig)
 
 
 
@@ -88,20 +90,24 @@ droite := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x08000000 -DPIScale")
 droite.SetFont("s13", "Segoe UI")
 
 droite.SetFont("s11 w700 c1E1E1E", "Segoe UI")
-btnToutReduire := BoutonCouleur(droite, "x4 y10 w92 h92", "TOUT`nRÉDUIRE", couleurZoom, "1E1E1E")
-btnZoomPlus := BoutonCouleur(droite, "x4 y106 w92 h92", "ZOOM +", couleurZoom, "1E1E1E")
-btnZoomMoins := BoutonCouleur(droite, "x4 y202 w92 h92", "ZOOM -", couleurZoom, "1E1E1E")
-btnZoomNormal := BoutonCouleur(droite, "x4 y298 w92 h92", "ZOOM`n100 %", couleurZoom, "1E1E1E")
-btnSelectionner := BoutonCouleur(droite, "x4 y418 w92 h92", "TOUT`nSÉLECT.", couleurEdition)
-btnCopier := BoutonCouleur(droite, "x4 y514 w92 h92", "COPIER", couleurEdition)
-btnColler := BoutonCouleur(droite, "x4 y610 w92 h92", "COLLER", couleurEdition)
+btnGithub := BoutonCouleur(droite, "x4 y10 w92 h92", "GITHUB", couleurLiens)
+btnYoutube := BoutonCouleur(droite, "x4 y106 w92 h92", "YOUTUBE`nSTUDIO", couleurLiens)
+btnTiktok := BoutonCouleur(droite, "x4 y202 w92 h92", "TIKTOK", couleurLiens)
+btnEleven := BoutonCouleur(droite, "x4 y298 w92 h92", "ELEVEN`nLABS", couleurLiens)
+btnToutReduire := BoutonCouleur(droite, "x4 y418 w92 h92", "TOUT`nRÉDUIRE", couleurZoom, "1E1E1E")
+btnZoomPlus := BoutonCouleur(droite, "x4 y514 w92 h92", "ZOOM +", couleurZoom, "1E1E1E")
+btnZoomMoins := BoutonCouleur(droite, "x4 y610 w92 h92", "ZOOM -", couleurZoom, "1E1E1E")
+btnZoomNormal := BoutonCouleur(droite, "x4 y706 w92 h92", "ZOOM`n100 %", couleurZoom, "1E1E1E")
+btnSelectionner := BoutonCouleur(droite, "x4 y826 w92 h92", "TOUT`nSÉLECT.", couleurEdition)
+btnCopier := BoutonCouleur(droite, "x4 y922 w92 h92", "COPIER", couleurEdition)
+btnColler := BoutonCouleur(droite, "x4 y1018 w92 h92", "COLLER", couleurEdition)
 
-btnClavier := BoutonCouleur(droite, "x4 y730 w92 h92", "CLAVIER", couleurClavier)
+btnClavier := BoutonCouleur(droite, "x4 y1138 w92 h92", "CLAVIER", couleurClavier)
 
 droite.SetFont("s" Round(34 * 96 / A_ScreenDPI) " w700 c1E1E1E", "Segoe UI Symbol")
 
-btnEntree := BoutonCouleur(droite, "x4 y850 w92 h92", "⏎", couleurNavig)
-btnAltTab := BoutonCouleur(droite, "x4 y946 w92 h92", "⇆", couleurNavig)
+btnAltTab := BoutonCouleur(droite, "x4 y1258 w92 h92", "⇆", couleurNavig)
+btnEntree := BoutonCouleur(droite, "x4 y1354 w92 h150", "⏎", couleurNavig)
 
 
 ; =========================
@@ -112,6 +118,12 @@ btnSelectionner.OnEvent("Click", (*) => Send("^a"))
 btnCopier.OnEvent("Click", (*) => Send("^c"))
 btnColler.OnEvent("Click", (*) => Send("^v"))
 
+btnClaudeCode.OnEvent("Click", OuvrirClaudeTerminal)
+btnClaudeAppli.OnEvent("Click", OuvrirAppliClaude)
+btnYoutube.OnEvent("Click", (*) => OuvrirSite("https://studio.youtube.com"))
+btnGithub.OnEvent("Click", (*) => OuvrirSite("https://github.com"))
+btnTiktok.OnEvent("Click", (*) => OuvrirSite("https://www.tiktok.com/tiktokstudio"))
+btnEleven.OnEvent("Click", (*) => OuvrirSite("https://elevenlabs.io/app"))
 btnToutReduire.OnEvent("Click", (*) => Send("#d"))   ; Windows + D : affiche le Bureau, un second clic remet tout
 btnZoomPlus.OnEvent("Click", (*) => Send("^+{=}"))
 btnZoomMoins.OnEvent("Click", ZoomMoinsAction)
@@ -119,6 +131,7 @@ btnZoomNormal.OnEvent("Click", ZoomNormalAction)
 
 btnClavier.OnEvent("Click", ClavierVisuel)
 btnEntree.OnEvent("Click", (*) => Send("{Enter}"))
+btnEchap.OnEvent("Click", (*) => Send("{Escape}"))
 btnAltTab.OnEvent("Click", (*) => Send("!{Tab}"))
 
 
@@ -169,7 +182,97 @@ ClavierVisuel(*) {
 
 
 ; =========================
+; OUVERTURE D'APPLICATIONS ET DE SITES
+; =========================
+
+; Ouvre un site dans Chrome (ou dans le navigateur par défaut si Chrome n'est pas trouvé).
+OuvrirSite(adresse) {
+    try
+        Run("chrome.exe " adresse)
+    catch
+        Run(adresse)
+}
+
+; Claude Code dans une fenêtre de terminal (commande claude).
+OuvrirClaudeTerminal(*) {
+    try
+        Run("claude.exe")
+    catch
+        MsgBox("Impossible de lancer la commande claude.", "CLAUDE CODE")
+}
+
+; Application Claude installée sur l'ordinateur ; si elle est déjà ouverte, la remet devant.
+OuvrirAppliClaude(*) {
+    h := WinExist("ahk_exe Claude.exe")
+    if (h) {
+        if (WinGetMinMax("ahk_id " h) = -1)
+            WinRestore("ahk_id " h)
+        WinActivate("ahk_id " h)
+        return
+    }
+    ; 1) lancement direct de l'application installée (identifiant Windows de Claude)
+    try {
+        Run("explorer.exe shell:AppsFolder\Claude_pzs8sxrjxfjjc!Claude")
+        return
+    }
+    ; 2) liste des applications de Windows (marche pour toutes les installations)
+    try {
+        for element in ComObject("Shell.Application").NameSpace("shell:AppsFolder").Items() {
+            if (element.Name = "Claude") {
+                element.InvokeVerb()
+                return
+            }
+        }
+    }
+    ; 3) à défaut, raccourci du menu Démarrer
+    for dossier in [A_StartMenu, A_StartMenuCommon] {
+        Loop Files, dossier "\*.lnk", "R" {
+            if (InStr(A_LoopFileName, "Claude") = 1 && !InStr(A_LoopFileName, "Code")) {
+                Run(A_LoopFileFullPath)
+                return
+            }
+        }
+    }
+    MsgBox("Application Claude introuvable.", "CLAUDE APPLI")
+}
+
+
+; Remote control : amène l'application Claude devant et démarre une nouvelle conversation vierge
+; (Ctrl+Maj+O), directement prête à recevoir la demande.
+OuvrirReglagesRemote(*) {
+    dejaOuverte := WinExist("ahk_exe Claude.exe")
+    OuvrirAppliClaude()
+    if (WinWaitActive("ahk_exe Claude.exe", , 20)) {
+        Sleep(dejaOuverte ? 400 : 3000)
+        Send("{Escape}")   ; ferme une fenêtre (réglages…) rouverte avec l'application
+        Sleep(300)
+        Send("^+o")
+        ; Si la fenêtre « Sélectionner un dossier pour la session locale » s'ouvre, on y tape le Bureau.
+        ; Si elle n'apparaît pas dans les 6 s, on ne fait rien de plus.
+        titreDossier := "Sélectionner un dossier pour la session locale"
+        if (WinWait(titreDossier, , 6)) {
+            WinActivate(titreDossier)
+            Sleep(500)
+            SendText(A_Desktop)   ; le champ « Dossier : » a déjà le focus
+            Sleep(200)
+            Send("{Enter}")   ; ouvre le dossier Bureau dans la fenêtre
+            Sleep(800)
+            ; puis clique sur « Sélectionner un dossier » pour valider le dossier ouvert
+            try ControlClick("Button1", titreDossier)
+            Sleep(800)
+            if (WinExist(titreDossier))   ; toujours là : on tente la touche Entrée
+                try {
+                    WinActivate(titreDossier)
+                    Send("{Enter}")
+                }
+        }
+    }
+}
+
+
+; =========================
 ; ZOOM
+; =========================
 ; =========================
 
 ZoomMoinsAction(*) {
@@ -246,7 +349,11 @@ AdapterBarre(barre, hauteurOriginale, bord, alignerDroite, seuil, reserveBas := 
         yFinal := Round(p[2] * facteur) + (p[2] >= seuil ? decalage : 0)
         controle.Move(p[1], yFinal, p[3], Max(1, Round(p[4] * facteur)))
         symbole := InStr("⇥⏎⇆", controle.Text)
-        taillePolice := symbole ? 34 : (InStr(controle.Text, "DISC.") ? 13 : 11)
+        plusLong := 0
+        for ligne in StrSplit(controle.Text, "`n")
+            plusLong := Max(plusLong, StrLen(ligne))
+        ; Les mots longs sont écrits un peu plus petit pour ne pas toucher les bords du bouton.
+        taillePolice := symbole ? (controle.Hwnd = btnEntree.Hwnd ? 50 : 34) : (InStr(controle.Text, "DISC.") ? 13 : (plusLong >= 8 ? 9 : (plusLong = 7 ? 10 : 11)))
         controle.SetFont("s" Max(8, Round(taillePolice * facteur * 96 / A_ScreenDPI)) " w700 c" couleursTexte.Get(controle.Hwnd, "1E1E1E"), symbole ? "Segoe UI Symbol" : "Segoe UI")
     }
     barre.Show("NoActivate w" barW " h" (hauteurZone - 5))
@@ -277,6 +384,39 @@ MonitorGet(MonitorGetPrimary(), &ecranG)   ; bord gauche de l'écran (la zone de
 MonitorGetWorkArea(MonitorGetPrimary(), , , , &zoneBasF)   ; bas de la zone de travail = haut de la barre des tâches
 fleches.Show("NoActivate x" ecranG " y" (zoneBasF - flechesH) " w100 h" flechesH)
 
+; Bouton DIDOU MANIA : en bas à gauche, sur la barre des tâches (zone vide à gauche du bouton Démarrer).
+; Il ouvre l'application Claude et démarre une nouvelle session sur le Bureau (voir OuvrirReglagesRemote).
+MonitorGet(MonitorGetPrimary(), , , , &ecranBas)
+hBarreTaches := Max(40, ecranBas - zoneBasF)
+largDidou := Round(A_ScreenWidth * 0.24)
+didou := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x08000000 -DPIScale")
+didou.MarginX := 0
+didou.MarginY := 0
+didou.BackColor := "000000"
+didou.SetFont("s" Round(10 * 96 / A_ScreenDPI) " w700 cFFFFFF", "Consolas")   ; même taille qu'avant, lettres blanches
+; Nom écrit en lettres ASCII (une police à espacement fixe garde les lettres alignées).
+lignesDidou := [
+    "   ____  _     _                                   _       ",
+    "  |  _ \(_) __| | ___  _   _ _ __ ___   __ _ _ __ (_) __ _ ",
+    "  | | | | |/ _`` |/ _ \| | | | '_ `` _ \ / _`` | '_ \| |/ _`` |",
+    "  | |_| | | (_| | (_) | |_| | | | | | | (_| | | | | | (_| |",
+    "  |____/|_|\__,_|\___/ \__,_|_| |_| |_|\__,_|_| |_|_|\__,_|"
+]
+texteDidou := ""
+for ligneArt in lignesDidou
+    texteDidou .= (A_Index > 1 ? "`n" : "") ligneArt
+; Mesure le texte, puis ajuste la case noire à sa taille (un peu de marge autour, texte centré en hauteur).
+fondDidou := didou.AddText("x0 y0 w10 h10 +0x100 Background000000")
+btnRemote := didou.AddText("x0 y0 +0x100 Background000000", texteDidou)   ; sans taille : s'ajuste au texte
+btnRemote.GetPos(, , &largTexte, &hautTexte)
+margeDidou := 16
+largDidou := largTexte + 2 * margeDidou
+fondDidou.Move(0, 0, largDidou, hBarreTaches)
+btnRemote.Move(margeDidou, Max(0, (hBarreTaches - hautTexte) // 2))
+fondDidou.OnEvent("Click", OuvrirReglagesRemote)
+btnRemote.OnEvent("Click", OuvrirReglagesRemote)
+didou.Show("NoActivate x" ecranG " y" zoneBasF " w" largDidou " h" hBarreTaches)
+
 ; Place à garder libre au-dessus de la barre des tâches pour que la barre gauche s'arrête avant les flèches.
 ReserveFleches() {
     global flechesH
@@ -305,6 +445,7 @@ GarderDevant() {
     try WinSetAlwaysOnTop(1, "ahk_id " gauche.Hwnd)
     try WinSetAlwaysOnTop(1, "ahk_id " droite.Hwnd)
     try WinSetAlwaysOnTop(1, "ahk_id " fleches.Hwnd)
+    try WinSetAlwaysOnTop(1, "ahk_id " didou.Hwnd)
 }
 
 ; Défilement au centre du contenu de la fenêtre active, sans cliquer ni saisir de texte.
@@ -344,6 +485,7 @@ CaptureVersClaude(*) {
         courante := WinExist("A")
         gauche.Hide()
         droite.Hide()
+        fleches.Hide()
         Sleep(150)
         if (!CapturerEcran()) {
             MsgBox("La capture a échoué. Aucune image n'a été copiée.", "CAPTURE CLAUDE")
@@ -369,10 +511,11 @@ CaptureVersClaude(*) {
     } catch as erreur {
         MsgBox("Capture non collée : " erreur.Message, "CAPTURE CLAUDE")
     } finally {
-        btnCaptures.Text := "CAPTURE CLAUDE"
+        btnCaptures.Text := "SCREEN`nCLAUDE"
         btnCaptures.Enabled := true
         gauche.Show("NoActivate")
         droite.Show("NoActivate")
+        fleches.Show("NoActivate")
         MouseMove(ancienX, ancienY, 0)
         occupe := false
     }
@@ -451,7 +594,7 @@ CapturerEcran() {
 ; ===== Boutons =====
 
 ; CAPTURE ÉCRAN : tout l'écran, copié dans le presse-papiers (Ctrl+V pour le coller où tu veux).
-; Les barres sont cachées le temps de la prise.
+; Les barres restent visibles et apparaissent dans la capture.
 CaptureEcran(*) {
     static occupe := false
     if (occupe)
@@ -459,13 +602,8 @@ CaptureEcran(*) {
     occupe := true
     ok := false
     try {
-        gauche.Hide()
-        droite.Hide()
-        Sleep(250)
-        ok := CapturerEcran()
+        ok := CapturerEcran()   ; les barres restent visibles : elles sont dans la capture
     } finally {
-        gauche.Show("NoActivate")
-        droite.Show("NoActivate")
         occupe := false
     }
     ToolTip(ok ? "Capture copiée dans le presse-papiers." : "La capture a échoué.")
