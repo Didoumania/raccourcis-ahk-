@@ -18,4 +18,4 @@ Deux barres de boutons de raccourcis sur les bords de l'écran (gauche et droite
 - Dépôt **public** : n'y mettre aucun mot de passe, token ni chemin personnel sensible.
 
 ## Où on en est
-À compléter : boutons à ajouter ou à corriger.
+- Au 25/11/2026 : `raccourcis.ahk` est la version du Shadow (boutons FERMER, CTRL+S, SAUVER+FERMER, réponses aux commentaires, smiley « Regarde »). L'ancienne version est dans `Versions/raccourcis_version_avant.ahk`. Le lanceur ouvre `Bureau\Raccourcis Claude\raccourcis.ahk`.
