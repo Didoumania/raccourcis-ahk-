@@ -1,6 +1,6 @@
 #Requires AutoHotkey v2.0
-; Lanceur de démarrage : ouvre la version « avant » des raccourcis à l'allumage de Windows.
-; Mets une copie de ce fichier (ou un raccourci vers lui) dans le dossier de démarrage (Win+R, puis shell:startup).
+; Lanceur de démarrage : ouvre les raccourcis (avec le smiley Regarde) à l'allumage de Windows.
+; L'ancienne version sans smiley reste disponible : Versions\raccourcis_version_avant.ahk
 Sleep(5000)   ; laisse Windows finir de s'installer
-Run('"' A_Desktop '\Raccourcis Claude\Versions\raccourcis_version_avant.ahk"')
+Run('"' A_Desktop '\Raccourcis Claude\raccourcis.ahk"')
 ExitApp

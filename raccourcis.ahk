@@ -9,6 +9,7 @@ couleurNavig   := "D4B8F0"   ; lilas pastel : défilement, Tab, Entrée, Alt+Tab
 couleurZoom    := "FFE29A"   ; jaune pâle : zoom et tout réduire
 couleurClavier := "FFC8A2"   ; pêche : clavier
 couleurLiens   := "B2EBF2"   ; turquoise pâle : ouverture de Claude Code et des sites
+couleurReponses := "C5E1A5"   ; vert tilleul : lanceurs des réponses aux commentaires
 couleursTexte := Map()       ; couleur du texte par bouton (blanc par défaut)
 
 ; Bouton coloré : un cadre de texte cliquable (les boutons Windows ne peuvent pas être colorés).
@@ -26,11 +27,11 @@ BoutonCouleur(g, pos, texte, couleur, texteCouleur := "1E1E1E") {
 flechesH := 188   ; hauteur du bloc ▲▼ (défini ici car utilisé par la barre gauche)
 
 barW := 100
-barH := 1504
+barH := 1646
 
 MonitorGetWorkArea(MonitorGetPrimary(), &zoneGauche, &zoneHaut, &zoneDroite, &zoneBas)
 leftX := zoneGauche
-leftBarH := 1308 ; boutons discussion en haut, puis espace vide avant CAPTURE, jusqu'à la touche Tab
+leftBarH := 1500 ; boutons discussion en haut, puis espace vide avant CAPTURE, jusqu'à la touche Tab
 leftY := A_ScreenHeight - leftBarH - 5
 
 rightX := A_ScreenWidth - barW
@@ -45,22 +46,25 @@ gauche := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x08000000 -DPIScale")
 gauche.SetFont("s13", "Segoe UI")
 
 gauche.SetFont("s11 w700 c1E1E1E", "Segoe UI")
-btnCapture := BoutonCouleur(gauche, "x4 y562 w92 h92", "SCREEN`nÉCRAN", couleurCapture)
-btnZone := BoutonCouleur(gauche, "x4 y658 w92 h92", "SCREEN`nZONE", couleurCapture)
-btnCaptures := BoutonCouleur(gauche, "x4 y754 w92 h92", "SCREEN`nCLAUDE", couleurCapture)
-btnSupprimer := BoutonCouleur(gauche, "x4 y874 w92 h92", "EFFACER", couleurEffacer)
-btnAnnuler := BoutonCouleur(gauche, "x4 y994 w92 h92", "ANNULER", couleurEdition)
-btnRetablir := BoutonCouleur(gauche, "x4 y1090 w92 h92", "RÉTABLIR", couleurEdition)
+btnCapture := BoutonCouleur(gauche, "x4 y754 w92 h92", "SCREEN`nÉCRAN", couleurCapture)
+btnZone := BoutonCouleur(gauche, "x4 y850 w92 h92", "SCREEN`nZONE", couleurCapture)
+btnCaptures := BoutonCouleur(gauche, "x4 y946 w92 h92", "SCREEN`nCLAUDE", couleurCapture)
+btnSupprimer := BoutonCouleur(gauche, "x4 y1066 w92 h92", "EFFACER", couleurEffacer)
+btnAnnuler := BoutonCouleur(gauche, "x4 y1186 w92 h92", "ANNULER", couleurEdition)
+btnRetablir := BoutonCouleur(gauche, "x4 y1282 w92 h92", "RÉTABLIR", couleurEdition)
 btnEchap := BoutonCouleur(gauche, "x4 y10 w92 h92", "ÉCHAP", couleurEffacer)
-btnClaudeCode := BoutonCouleur(gauche, "x4 y130 w92 h92", "CLAUDE`nCODE", couleurLiens)
-btnClaudeAppli := BoutonCouleur(gauche, "x4 y226 w92 h92", "CLAUDE`nAPPLI", couleurLiens)
+btnFermer := BoutonCouleur(gauche, "x4 y106 w92 h92", "FERMER", couleurEffacer)
+btnClaudeCode := BoutonCouleur(gauche, "x4 y226 w92 h92", "CLAUDE`nCODE", couleurLiens)
+btnClaudeAppli := BoutonCouleur(gauche, "x4 y322 w92 h92", "CLAUDE`nAPPLI", couleurLiens)
 
-gauche.SetFont("s13 w700 c1E1E1E", "Segoe UI")
-btnDiscussionHaut := BoutonCouleur(gauche, "x4 y346 w92 h92", "DISC. ↑", couleurNavig)
-btnDiscussionBas := BoutonCouleur(gauche, "x4 y442 w92 h92", "DISC. ↓", couleurNavig)
+gauche.SetFont("s11 w700 c1E1E1E", "Segoe UI")
+; Lanceurs des réponses aux commentaires (à la place des anciens boutons DISC. ↑ et DISC. ↓).
+btnRepBoucle := BoutonCouleur(gauche, "x4 y442 w92 h92", "RÉP.`nBOUCLE", couleurReponses)
+btnRepUneFois := BoutonCouleur(gauche, "x4 y538 w92 h92", "RÉP.`n1 FOIS", couleurReponses)
+btnRepTiktok := BoutonCouleur(gauche, "x4 y634 w92 h92", "RÉP.`nTIKTOK", couleurReponses)
 
 gauche.SetFont("s" Round(34 * 96 / A_ScreenDPI) " w700 c1E1E1E", "Segoe UI Symbol")
-btnTab := BoutonCouleur(gauche, "x4 y1210 w92 h92", "⇥", couleurNavig)
+btnTab := BoutonCouleur(gauche, "x4 y1402 w92 h92", "⇥", couleurNavig)
 
 
 
@@ -77,8 +81,10 @@ btnRetablir.OnEvent("Click", (*) => Send("^y"))
 
 
 btnTab.OnEvent("Click", (*) => Send("{Tab}"))
-btnDiscussionHaut.OnEvent("Click", (*) => DefilerDiscussion("WheelUp"))
-btnDiscussionBas.OnEvent("Click", (*) => DefilerDiscussion("WheelDown"))
+btnFermer.OnEvent("Click", FermerFenetre)
+btnRepBoucle.OnEvent("Click", (*) => LancerReponses("lancer_en_boucle.bat"))
+btnRepUneFois.OnEvent("Click", (*) => LancerReponses("lancer.bat"))
+btnRepTiktok.OnEvent("Click", (*) => LancerReponses("tiktok.bat"))
 
 
 
@@ -102,12 +108,16 @@ btnSelectionner := BoutonCouleur(droite, "x4 y826 w92 h92", "TOUT`nSÉLECT.", co
 btnCopier := BoutonCouleur(droite, "x4 y922 w92 h92", "COPIER", couleurEdition)
 btnColler := BoutonCouleur(droite, "x4 y1018 w92 h92", "COLLER", couleurEdition)
 
-btnClavier := BoutonCouleur(droite, "x4 y1138 w92 h92", "CLAVIER", couleurClavier)
+btnEnregistrer := BoutonCouleur(droite, "x4 y1114 w92 h92", "CTRL+S", couleurEdition)
+
+btnSauverFermer := BoutonCouleur(droite, "x4 y1210 w92 h92", "SAUVER`nFERMER", couleurEffacer)
+
+btnClavier := BoutonCouleur(droite, "x4 y1330 w92 h92", "CLAVIER", couleurClavier)
 
 droite.SetFont("s" Round(34 * 96 / A_ScreenDPI) " w700 c1E1E1E", "Segoe UI Symbol")
 
-btnAltTab := BoutonCouleur(droite, "x4 y1258 w92 h92", "⇆", couleurNavig)
-btnEntree := BoutonCouleur(droite, "x4 y1354 w92 h150", "⏎", couleurNavig)
+btnAltTab := BoutonCouleur(droite, "x4 y1450 w92 h92", "⇆", couleurNavig)
+btnEntree := BoutonCouleur(droite, "x4 y1546 w92 h100", "⏎", couleurNavig)
 
 
 ; =========================
@@ -117,6 +127,8 @@ btnEntree := BoutonCouleur(droite, "x4 y1354 w92 h150", "⏎", couleurNavig)
 btnSelectionner.OnEvent("Click", (*) => Send("^a"))
 btnCopier.OnEvent("Click", (*) => Send("^c"))
 btnColler.OnEvent("Click", (*) => Send("^v"))
+btnEnregistrer.OnEvent("Click", (*) => Send("^s"))   ; Enregistrer
+btnSauverFermer.OnEvent("Click", SauverEtFermer)
 
 btnClaudeCode.OnEvent("Click", OuvrirClaudeTerminal)
 btnClaudeAppli.OnEvent("Click", OuvrirAppliClaude)
@@ -284,6 +296,67 @@ ZoomNormalAction(*) {
 }
 
 
+
+;
+; Lance un des fichiers de réponses aux commentaires (dossier Documents\commentaires), comme les raccourcis du Bureau.
+LancerReponses(fichier) {
+    dossier := EnvGet("USERPROFILE") "\Documents\commentaires"
+    try Run('"' dossier '\' fichier '"', dossier)
+    catch as erreur
+        MsgBox("Impossible de lancer " fichier " : " erreur.Message, "RÉPONSES")
+}
+
+; FERMER : ferme la fenêtre sur laquelle tu travaillais (comme la croix en haut à droite).
+; Jamais les barres de ce script, ni le Bureau, ni la barre des tâches.
+derniereFenetre := 0
+SetTimer(NoterFenetre, 200)
+
+FenetreAutorisee(h) {
+    if (!h)
+        return false
+    try {
+        if (WinGetPID("ahk_id " h) = ProcessExist())
+            return false
+        classe := WinGetClass("ahk_id " h)
+        if (classe = "Progman" || classe = "WorkerW" || classe = "Shell_TrayWnd" || classe = "Shell_SecondaryTrayWnd")
+            return false
+        return true
+    }
+    return false
+}
+
+; Retient la dernière fenêtre « normale » utilisée (les barres ne comptent pas).
+NoterFenetre() {
+    global derniereFenetre
+    h := WinExist("A")
+    if (FenetreAutorisee(h))
+        derniereFenetre := h
+}
+
+FermerFenetre(*) {
+    global derniereFenetre
+    cible := WinExist("A")
+    if (!FenetreAutorisee(cible))
+        cible := derniereFenetre
+    if (FenetreAutorisee(cible) && WinExist("ahk_id " cible))
+        try WinClose("ahk_id " cible)
+}
+
+; SAUVER + FERMER : CTRL+S, puis ferme la fenêtre. Si une fenêtre « Enregistrer sous » s'ouvre
+; (fichier sans nom), c'est elle qui est fermée : ton texte n'est pas perdu.
+SauverEtFermer(*) {
+    Send("^s")
+    Sleep(500)
+    FermerFenetre()
+}
+
+; REGARDE : écrit « Regarde » puis appuie sur Entrée, là où le curseur est (par exemple le chat Claude).
+EnvoyerRegarde(*) {
+    SendText("Regarde")
+    Sleep(60)
+    Send("{Enter}")
+}
+
 ; =========================
 ; AFFICHAGE
 ; =========================
@@ -417,6 +490,19 @@ fondDidou.OnEvent("Click", OuvrirReglagesRemote)
 btnRemote.OnEvent("Click", OuvrirReglagesRemote)
 didou.Show("NoActivate x" ecranG " y" zoneBasF " w" largDidou " h" hBarreTaches)
 
+; Bouton SMILEY : petit bouton jaune juste à droite de DIDOU MANIA, sur la barre des tâches.
+; Un clic écrit « Regarde » puis appuie sur Entrée là où se trouve le curseur (par exemple le chat Claude).
+; Il ne prend pas le focus : le texte part dans la fenêtre que tu étais en train d'utiliser.
+largSmiley := Round(hBarreTaches * 1.3)
+smiley := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x08000000 -DPIScale")
+smiley.MarginX := 0
+smiley.MarginY := 0
+smiley.BackColor := "FFD54F"   ; jaune : pour changer la couleur, modifie ces 6 caractères (ici et ci-dessous)
+smiley.SetFont("s" Max(8, Round(hBarreTaches * 0.55 * 72 / A_ScreenDPI)) " w700 c1E1E1E", "Segoe UI Emoji")
+btnSmiley := smiley.AddText("x0 y0 w" largSmiley " h" hBarreTaches " +0x100 +Center +0x200 BackgroundFFD54F", "😀")
+btnSmiley.OnEvent("Click", EnvoyerRegarde)
+smiley.Show("NoActivate x" (ecranG + largDidou) " y" zoneBasF " w" largSmiley " h" hBarreTaches)
+
 ; Place à garder libre au-dessus de la barre des tâches pour que la barre gauche s'arrête avant les flèches.
 ReserveFleches() {
     global flechesH
@@ -446,6 +532,7 @@ GarderDevant() {
     try WinSetAlwaysOnTop(1, "ahk_id " droite.Hwnd)
     try WinSetAlwaysOnTop(1, "ahk_id " fleches.Hwnd)
     try WinSetAlwaysOnTop(1, "ahk_id " didou.Hwnd)
+    try WinSetAlwaysOnTop(1, "ahk_id " smiley.Hwnd)
 }
 
 ; Défilement au centre du contenu de la fenêtre active, sans cliquer ni saisir de texte.
